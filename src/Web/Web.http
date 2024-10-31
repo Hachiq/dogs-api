@@ -1,6 +1,6 @@
 @Web_HostAddress = http://localhost:5275
 
-GET {{Web_HostAddress}}/
+GET {{Web_HostAddress}}/ping/
 Accept: application/json
 
 ###
