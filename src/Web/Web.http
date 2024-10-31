@@ -5,6 +5,18 @@ Accept: application/json
 
 ###
 
+POST {{Api}}/dog
+Content-Type: application/json
+
+{
+  "name": "Leo",
+  "color": "grey",
+  "tail_length": 35,
+  "weight": 26
+}
+
+###
+
 GET {{Api}}/dogs/
 Accept: application/json
 
