@@ -29,7 +29,8 @@ namespace Web.Controllers
             {
                 _logger.LogError(ex,
                     "Get dogs request failed");
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "An unexpected error occurred. Please try again later.");
             }
         }
 
@@ -58,7 +59,8 @@ namespace Web.Controllers
             {
                 _logger.LogError(ex,
                     "Add dog request for {request} failed", request);
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "An unexpected error occurred. Please try again later.");
             }
         }
     }
