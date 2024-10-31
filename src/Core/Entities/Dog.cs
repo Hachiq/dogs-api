@@ -24,7 +24,7 @@ public class Dog
     /// </summary>
     /// <example>25</example>
 
-    public required int TailLength { get; set; }
+    public required int Tail_length { get; set; }
     /// <summary>
     /// Gets or sets the weight of the dog, measured in kilograms.
     /// This property is required and represents a positive integer indicating the dog's weight.

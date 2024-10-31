@@ -1,5 +1,6 @@
 ﻿using Core.Contracts;
 using Core.Entities;
+using Core.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Constants;
@@ -27,6 +28,22 @@ namespace Web.Controllers
             {
                 _logger.LogError(ex,
                     "Get dogs request failed");
+                throw;
+            }
+        }
+
+        [HttpPost("dog")]
+        public async Task<IActionResult> AddDog(AddDogRequest request)
+        {
+            try
+            {
+                await _doggieService.AddDoggie(request);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Add dog request failed");
                 throw;
             }
         }

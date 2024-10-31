@@ -10,7 +10,7 @@ Accept: application/json
 
 ###
 
-GET {{Api}}/dogs?pageNumber=3&pageSize=10
+GET {{Api}}/dogs?pageNumber=2&pageSize=10
 Accept: application/json
 
 ###
@@ -20,7 +20,7 @@ Accept: application/json
 
 ###
 
-GET {{Api}}/dogs?attribute=color&order=desc&pageNumber=3&pageSize=10
+GET {{Api}}/dogs?attribute=color&order=desc&pageNumber=2&pageSize=10
 Accept: application/json
 
 ###

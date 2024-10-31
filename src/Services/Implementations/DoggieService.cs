@@ -20,7 +20,7 @@ public class DoggieService(IRepository _db) : IDoggieService
         {
             Name = request.Name,
             Color = request.Color,
-            TailLength = request.TailLength,
+            Tail_length = request.Tail_Length,
             Weight = request.Weight
         };
 
@@ -36,7 +36,7 @@ public class DoggieService(IRepository _db) : IDoggieService
         {
             Sorting.Name => order == Sorting.Descending ? dogs.OrderByDescending(d => d.Name) : dogs.OrderBy(d => d.Name),
             Sorting.Color => order == Sorting.Descending ? dogs.OrderByDescending(d => d.Color) : dogs.OrderBy(d => d.Color),
-            Sorting.TailLength => order == Sorting.Descending ? dogs.OrderByDescending(d => d.TailLength) : dogs.OrderBy(d => d.TailLength),
+            Sorting.TailLength => order == Sorting.Descending ? dogs.OrderByDescending(d => d.Tail_length) : dogs.OrderBy(d => d.Tail_length),
             Sorting.Weight => order == Sorting.Descending ? dogs.OrderByDescending(d => d.Weight) : dogs.OrderBy(d => d.Weight),
             _ => dogs.OrderBy(d => d.Name)
         };
