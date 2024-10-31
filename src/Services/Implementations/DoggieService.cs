@@ -37,6 +37,15 @@ public class DoggieService(IRepository _db) : IDoggieService
 
     public async Task<IEnumerable<Dog>> GetDoggies(string attribute, string order, int pageNumber, int pageSize)
     {
+        if (pageNumber < 1)
+        {
+            pageNumber = 1;
+        }
+        if (pageSize < 1)
+        {
+            pageSize = Pagination.PageSize;
+        }
+
         var dogs = _db.GetAllAsQueryable<Dog>();
 
         dogs = attribute.ToLower() switch
