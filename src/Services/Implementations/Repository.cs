@@ -30,6 +30,11 @@ public class Repository(AppDbContext _context) : IRepository
         }
     }
 
+    public IQueryable<T> GetAllAsQueryable<T>() where T : class
+    {
+        return _context.Set<T>().AsQueryable();
+    }
+
     public async Task AddAsync<T>(T entity) where T : class
     {
         await _context.Set<T>().AddAsync(entity);

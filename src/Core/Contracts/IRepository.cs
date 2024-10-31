@@ -22,6 +22,13 @@ public interface IRepository
     /// <returns>A task that represents the asynchronous operation, containing a collection of filtered entities.</returns>
     Task<IEnumerable<T>> GetAllAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
     /// <summary>
+    /// Retrieves all entities of the specified type as an <see cref="IQueryable{T}"/>.
+    /// This allows for deferred execution and further filtering or ordering to be applied in LINQ queries.
+    /// </summary>
+    /// <typeparam name="T">The type of the entities to retrieve.</typeparam>
+    /// <returns>An <see cref="IQueryable{T}"/> that represents all entities of the specified type.</returns>
+    IQueryable<T> GetAllAsQueryable<T>() where T : class;
+    /// <summary>
     /// Adds a new entity of the specified type to the database asynchronously.
     /// </summary>
     /// <typeparam name="T">The type of the entity to add.</typeparam>
