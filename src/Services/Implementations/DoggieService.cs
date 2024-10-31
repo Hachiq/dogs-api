@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Services.Implementations;
 
+/// <summary>
+/// Provides services for managing and retrieving dog data, including adding a new dog and retrieving dogs with sorting and pagination.
+/// Implements the <see cref="IDoggieService"/> interface.
+/// </summary>
 public class DoggieService(IRepository _db) : IDoggieService
 {
     public async Task AddDoggie(AddDogRequest request)
