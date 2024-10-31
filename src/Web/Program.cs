@@ -1,3 +1,4 @@
+using Core.ExceptionHandling;
 using Data;
 
 namespace Web;
@@ -16,6 +17,8 @@ public class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
+
+        app.UseMiddleware<ExceptionMiddleware>();
 
         app.UseHttpsRedirection();
 
