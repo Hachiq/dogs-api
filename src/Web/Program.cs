@@ -1,5 +1,6 @@
 using Core.ExceptionHandling;
 using Data;
+using Services;
 
 namespace Web;
 
@@ -11,6 +12,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddDataServices(builder.Configuration);
+        builder.Services.AddApplicationServices();
 
         builder.Services.AddControllers();
 
