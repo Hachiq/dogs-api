@@ -35,6 +35,11 @@ public class Repository(AppDbContext _context) : IRepository
         return _context.Set<T>().AsQueryable();
     }
 
+    public async Task<T?> FindAsync<T>(Expression<Func<T, bool>> predicate) where T : class
+    {
+        return await _context.Set<T>().FirstOrDefaultAsync(predicate);
+    }
+
     public async Task AddAsync<T>(T entity) where T : class
     {
         await _context.Set<T>().AddAsync(entity);
