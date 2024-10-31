@@ -4,6 +4,7 @@ using Core.Exceptions;
 using Core.Requests;
 using Microsoft.EntityFrameworkCore;
 using Services.Constants;
+using Services.Validators;
 
 namespace Services.Implementations;
 
@@ -15,33 +16,9 @@ public class DoggieService(IRepository _db) : IDoggieService
 {
     public async Task AddDoggie(AddDogRequest request)
     {
-        if (String.IsNullOrWhiteSpace(request.Name))
-        {
-            throw new EmptyNameException();
-        }
-        if (request.Name.Length > 50)
-        {
-            throw new NameTooLongException();
-        }
-        if (String.IsNullOrWhiteSpace(request.Color))
-        {
-            throw new EmptyColorException();
-        }
-        if (request.Color.Length > 50)
-        {
-            throw new ColorTooLongException();
-        }
-        if (request.Tail_Length < 0)
-        {
-            throw new InvalidTailLengthException();
-        }
-        if (request.Weight < 0)
-        {
-            throw new InvalidWeightException();
-        }
+        DogValidator.ValidateAddDogRequest(request);
 
-        var existingDog = await _db.FindAsync<Dog>(d => d.Name == request.Name);
-        if (existingDog is not null)
+        if (await _db.FindAsync<Dog>(d => d.Name == request.Name) is not null)
         {
             throw new NameTakenException();
         }
