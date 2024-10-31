@@ -1,5 +1,6 @@
 ﻿using Core.Contracts;
 using Core.Entities;
+using Core.Exceptions;
 using Core.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -40,10 +41,23 @@ namespace Web.Controllers
                 await _doggieService.AddDoggie(request);
                 return Ok();
             }
+            catch (Exception ex) when (ex 
+                is EmptyNameException 
+                or NameTooLongException 
+                or EmptyColorException 
+                or ColorTooLongException 
+                or InvalidTailLengthException 
+                or InvalidWeightException
+                or NameTakenException)
+            {
+                _logger.LogWarning(ex,
+                    "Add dog request for {request} failed", request);
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex,
-                    "Add dog request failed");
+                    "Add dog request for {request} failed", request);
                 throw;
             }
         }

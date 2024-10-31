@@ -1,5 +1,6 @@
 ﻿using Core.Contracts;
 using Core.Entities;
+using Core.Exceptions;
 using Core.Requests;
 using Microsoft.EntityFrameworkCore;
 using Services.Constants;
@@ -14,7 +15,36 @@ public class DoggieService(IRepository _db) : IDoggieService
 {
     public async Task AddDoggie(AddDogRequest request)
     {
-        // TODO: Validate request
+        if (String.IsNullOrWhiteSpace(request.Name))
+        {
+            throw new EmptyNameException();
+        }
+        if (request.Name.Length > 50)
+        {
+            throw new NameTooLongException();
+        }
+        if (String.IsNullOrWhiteSpace(request.Color))
+        {
+            throw new EmptyColorException();
+        }
+        if (request.Color.Length > 50)
+        {
+            throw new ColorTooLongException();
+        }
+        if (request.Tail_Length < 0)
+        {
+            throw new InvalidTailLengthException();
+        }
+        if (request.Weight < 0)
+        {
+            throw new InvalidWeightException();
+        }
+
+        var existingDog = await _db.FindAsync<Dog>(d => d.Name == request.Name);
+        if (existingDog is not null)
+        {
+            throw new NameTakenException();
+        }
 
         var doggie = new Dog
         {
