@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Requests;
 using Microsoft.EntityFrameworkCore;
+using Services.Constants;
 
 namespace Services.Implementations;
 
@@ -33,10 +34,10 @@ public class DoggieService(IRepository _db) : IDoggieService
 
         dogs = attribute.ToLower() switch
         {
-            "name" => order == "desc" ? dogs.OrderByDescending(d => d.Name) : dogs.OrderBy(d => d.Name),
-            "color" => order == "desc" ? dogs.OrderByDescending(d => d.Color) : dogs.OrderBy(d => d.Color),
-            "tail_length" => order == "desc" ? dogs.OrderByDescending(d => d.TailLength) : dogs.OrderBy(d => d.TailLength),
-            "weight" => order == "desc" ? dogs.OrderByDescending(d => d.Weight) : dogs.OrderBy(d => d.Weight),
+            Sorting.Name => order == Sorting.Descending ? dogs.OrderByDescending(d => d.Name) : dogs.OrderBy(d => d.Name),
+            Sorting.Color => order == Sorting.Descending ? dogs.OrderByDescending(d => d.Color) : dogs.OrderBy(d => d.Color),
+            Sorting.TailLength => order == Sorting.Descending ? dogs.OrderByDescending(d => d.TailLength) : dogs.OrderBy(d => d.TailLength),
+            Sorting.Weight => order == Sorting.Descending ? dogs.OrderByDescending(d => d.Weight) : dogs.OrderBy(d => d.Weight),
             _ => dogs.OrderBy(d => d.Name)
         };
 
