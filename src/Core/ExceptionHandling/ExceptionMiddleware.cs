@@ -19,46 +19,43 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
         }
         catch (JsonException ex)
         {
-            logger.LogWarning("Something went wrong: {ex}", ex);
-            await HandleJsonExceptionAsync(context, ex);
+            logger.LogWarning("JSON Exception: {Exception}", ex);
+
+            await HandleExceptionAsync(
+                context,
+                HttpStatusCode.BadRequest,
+                "Invalid JSON format.",
+                ex.Message
+            );
         }
         catch (Exception ex)
         {
-            logger.LogError("Something went wrong: {ex}", ex);
-            await HandleExceptionAsync(context, ex);
+            logger.LogError("Unhandled Exception: {Exception}", ex);
+
+            await HandleExceptionAsync(
+                context,
+                HttpStatusCode.InternalServerError,
+                "Internal Server Error. Please try again later.",
+                ex.Message
+            );
         }
     }
 
-    private async Task HandleJsonExceptionAsync(HttpContext context, Exception exception)
+    private static Task HandleExceptionAsync(
+        HttpContext context,
+        HttpStatusCode statusCode,
+        string message,
+        string details)
     {
-        var handleExceptionModel = new HandleExceptionModel
+        var responseContent = JsonSerializer.Serialize(new HandleExceptionModel
         {
-            Code = HttpStatusCode.BadRequest,
-            Message = "Invalid JSON format",
-            Details = exception.Message
-        };
-
-        var responseContent = JsonSerializer.Serialize(handleExceptionModel);
+            Code = statusCode,
+            Message = message,
+            Details = details
+        });
 
         context.Response.ContentType = ApplicationJsonType;
-        context.Response.StatusCode = (int)handleExceptionModel.Code;
-
-        await context.Response.WriteAsync(responseContent);
-    }
-
-    private Task HandleExceptionAsync(HttpContext context, Exception exception)
-    {
-        var handleExceptionModel = new HandleExceptionModel
-        {
-            Code = HttpStatusCode.InternalServerError,
-            Message = "Internal Server Error. Please try again later.",
-            Details = exception.Message
-        };
-
-        var responseContent = JsonSerializer.Serialize(handleExceptionModel);
-
-        context.Response.ContentType = ApplicationJsonType;
-        context.Response.StatusCode = (int)handleExceptionModel.Code;
+        context.Response.StatusCode = (int)statusCode;
 
         return context.Response.WriteAsync(responseContent);
     }
