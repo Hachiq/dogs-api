@@ -1,3 +1,4 @@
+using Core.Constants;
 using Core.ExceptionHandling;
 using Data;
 using Services;
@@ -13,12 +14,13 @@ public class Program
         // Add services to the container.
         builder.Services.AddDataServices(builder.Configuration);
         builder.Services.AddApplicationServices();
-
-        builder.Services.AddControllers();
+        builder.Services.AddPresentationServices(builder.Configuration);
 
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
+
+        app.UseRateLimiter();
 
         app.UseMiddleware<ExceptionMiddleware>();
 
@@ -27,7 +29,7 @@ public class Program
         app.UseAuthorization();
 
 
-        app.MapControllers();
+        app.MapControllers().RequireRateLimiting(RateLimitPolicies.Fixed);
 
         app.Run();
     }
