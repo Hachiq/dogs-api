@@ -15,6 +15,7 @@ namespace Web.Controllers
     {
         [HttpGet("dogs")]
         public async Task<IActionResult> GetDogs(
+            CancellationToken cancellationToken,
             [FromQuery] string attribute = Sorting.Name,
             [FromQuery] string order = Sorting.Ascending,
             [FromQuery] int pageNumber = 1,
@@ -22,7 +23,7 @@ namespace Web.Controllers
         {
             try
             {
-                var response = await _doggieService.GetDoggies(attribute, order, pageNumber, pageSize);
+                var response = await _doggieService.GetDoggies(attribute, order, pageNumber, pageSize, cancellationToken);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -35,11 +36,11 @@ namespace Web.Controllers
         }
 
         [HttpPost("dog")]
-        public async Task<IActionResult> AddDog(AddDogRequest request)
+        public async Task<IActionResult> AddDog(AddDogRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                await _doggieService.AddDoggie(request);
+                await _doggieService.AddDoggie(request, cancellationToken);
                 return Ok();
             }
             catch (Exception ex) when (ex 

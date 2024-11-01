@@ -16,12 +16,12 @@ public interface IDoggieService
     /// <remarks>
     /// This method applies sorting based on the specified attribute and order, then applies pagination based on the page number and page size.
     /// </remarks>
-    Task<IEnumerable<Dog>> GetDoggies(string attribute, string order, int pageNumber, int pageSize);
+    Task<IEnumerable<Dog>> GetDoggies(string attribute, string order, int pageNumber, int pageSize, CancellationToken cancellationToken);
     /// <summary>
     /// Adds a new dog to the repository based on the specified <see cref="AddDogRequest"/>.
     /// </summary>
     /// <param name="request">The request containing the details of the dog to be added.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     /// <remarks>This method validates the incoming request and adds a new dog record to the data store.</remarks>
-    Task AddDoggie(AddDogRequest dog);
+    Task AddDoggie(AddDogRequest dog, CancellationToken cancellationToken);
 }

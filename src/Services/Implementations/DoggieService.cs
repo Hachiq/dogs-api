@@ -14,11 +14,11 @@ namespace Services.Implementations;
 /// </summary>
 public class DoggieService(IRepository _db) : IDoggieService
 {
-    public async Task AddDoggie(AddDogRequest request)
+    public async Task AddDoggie(AddDogRequest request, CancellationToken cancellationToken)
     {
         DogValidator.ValidateAddDogRequest(request);
 
-        if (await _db.FindAsync<Dog>(d => d.Name == request.Name) is not null)
+        if (await _db.FindAsync<Dog>(d => d.Name == request.Name, cancellationToken) is not null)
         {
             throw new NameTakenException();
         }
@@ -31,11 +31,11 @@ public class DoggieService(IRepository _db) : IDoggieService
             Weight = request.Weight
         };
 
-        await _db.AddAsync(doggie);
-        await _db.SaveChangesAsync();
+        await _db.AddAsync(doggie, cancellationToken);
+        await _db.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<Dog>> GetDoggies(string attribute, string order, int pageNumber, int pageSize)
+    public async Task<IEnumerable<Dog>> GetDoggies(string attribute, string order, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         var dogs = _db.GetAllAsQueryable<Dog>();
 
@@ -53,6 +53,6 @@ public class DoggieService(IRepository _db) : IDoggieService
 
         dogs = dogs.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 
-        return await dogs.ToListAsync();
+        return await dogs.ToListAsync(cancellationToken);
     }
 }
