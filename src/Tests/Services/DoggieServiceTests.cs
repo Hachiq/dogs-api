@@ -28,55 +28,63 @@ public class DoggieServiceTests
     public async Task AddDoggie_ShouldThrowEmptyNameException_WhenNameIsEmpty()
     {
         var request = new AddDogRequest("", "Brown", 5, 10);
+        CancellationToken cancellationToken = CancellationToken.None;
 
-        await Assert.ThrowsAsync<EmptyNameException>(() => _service.AddDoggie(request));
+        await Assert.ThrowsAsync<EmptyNameException>(() => _service.AddDoggie(request, cancellationToken));
     }
 
     [Fact]
     public async Task AddDoggie_ShouldThrowNameTooLongException_WhenNameIsTooLong()
     {
         var request = new AddDogRequest(new string('A', 51), "Brown", 5, 10 );
+        CancellationToken cancellationToken = CancellationToken.None;
 
-        await Assert.ThrowsAsync<NameTooLongException>(() => _service.AddDoggie(request));
+        await Assert.ThrowsAsync<NameTooLongException>(() => _service.AddDoggie(request, cancellationToken));
     }
 
     [Fact]
     public async Task AddDoggie_ShouldThrowEmptyColorException_WhenColorIsEmpty()
     {
         var request = new AddDogRequest("Buddy", "", 5, 10);
+        CancellationToken cancellationToken = CancellationToken.None;
 
-        await Assert.ThrowsAsync<EmptyColorException>(() => _service.AddDoggie(request));
+        await Assert.ThrowsAsync<EmptyColorException>(() => _service.AddDoggie(request, cancellationToken));
     }
 
     [Fact]
     public async Task AddDoggie_ShouldThrowColorTooLongException_WhenColorIsTooLong()
     {
         var request = new AddDogRequest("Buddy", new string('A', 51), 5, 10);
+        CancellationToken cancellationToken = CancellationToken.None;
 
-        await Assert.ThrowsAsync<ColorTooLongException>(() => _service.AddDoggie(request));
+        await Assert.ThrowsAsync<ColorTooLongException>(() => _service.AddDoggie(request, cancellationToken));
     }
 
     [Fact]
     public async Task AddDoggie_ShouldThrowInvalidTailLengthException_WhenTailLengthIsNegative()
     {
         var request = new AddDogRequest("Buddy", "Brown", -1, 10);
+        CancellationToken cancellationToken = CancellationToken.None;
 
-        await Assert.ThrowsAsync<InvalidTailLengthException>(() => _service.AddDoggie(request));
+        await Assert.ThrowsAsync<InvalidTailLengthException>(() => _service.AddDoggie(request, cancellationToken));
     }
 
     [Fact]
     public async Task AddDoggie_ShouldThrowInvalidWeightException_WhenWeightIsNegative()
     {
         var request = new AddDogRequest("Buddy", "Brown", 5, -5);
+        CancellationToken cancellationToken = CancellationToken.None;
 
-        await Assert.ThrowsAsync<InvalidWeightException>(() => _service.AddDoggie(request));
+        await Assert.ThrowsAsync<InvalidWeightException>(() => _service.AddDoggie(request, cancellationToken));
     }
 
     [Fact]
     public async Task AddDoggie_ShouldThrowNameTakenException_WhenNameAlreadyExists()
     {
         var request = new AddDogRequest("Buddy", "Brown", 5, 10);
-        _mockRepository.Setup(repo => repo.FindAsync(It.IsAny<Expression<Func<Dog, bool>>>()))
+        CancellationToken cancellationToken = CancellationToken.None;
+
+        _mockRepository.Setup(repo => repo.FindAsync(It.IsAny<Expression<Func<Dog, bool>>>(), cancellationToken))
             .ReturnsAsync(new Dog
             {
                 Name = request.Name,
@@ -85,20 +93,22 @@ public class DoggieServiceTests
                 Weight = request.Weight
             });
 
-        await Assert.ThrowsAsync<NameTakenException>(() => _service.AddDoggie(request));
+        await Assert.ThrowsAsync<NameTakenException>(() => _service.AddDoggie(request, cancellationToken));
     }
 
     [Fact]
     public async Task AddDoggie_ShouldAddDog_WhenRequestIsValid()
     {
         var request = new AddDogRequest ("Buddy", "Brown", 5, 10);
-        _mockRepository.Setup(repo => repo.FindAsync(It.IsAny<Expression<Func<Dog, bool>>>()))
+        CancellationToken cancellationToken = CancellationToken.None;
+
+        _mockRepository.Setup(repo => repo.FindAsync(It.IsAny<Expression<Func<Dog, bool>>>(), cancellationToken))
             .ReturnsAsync((Dog)null);
 
-        await _service.AddDoggie(request);
+        await _service.AddDoggie(request, cancellationToken);
 
-        _mockRepository.Verify(repo => repo.AddAsync(It.IsAny<Dog>()), Times.Once);
-        _mockRepository.Verify(repo => repo.SaveChangesAsync(), Times.Once);
+        _mockRepository.Verify(repo => repo.AddAsync(It.IsAny<Dog>(), cancellationToken), Times.Once);
+        _mockRepository.Verify(repo => repo.SaveChangesAsync(cancellationToken), Times.Once);
     }
 
     #endregion
@@ -122,9 +132,11 @@ public class DoggieServiceTests
             new Dog { Name = "Max", Color = "Black", Tail_length = 7, Weight = 15 }
         }.AsAsyncQueryable();
 
+        CancellationToken cancellationToken = CancellationToken.None;
+
         _mockRepository.Setup(repo => repo.GetAllAsQueryable<Dog>()).Returns(dogList);
 
-        var result = await _service.GetDoggies(attribute, order, 1, 10);
+        var result = await _service.GetDoggies(attribute, order, 1, 10, cancellationToken);
 
         //var sortedList = order == Sorting.Descending
         //    ? result.OrderByDescending(d => EF.Property<object>(d, attribute))
@@ -150,9 +162,11 @@ public class DoggieServiceTests
             new Dog { Name = "Lucy", Color = "White", Tail_length = 6, Weight = 12 }
         }.AsAsyncQueryable();
 
+        CancellationToken cancellationToken = CancellationToken.None;
+
         _mockRepository.Setup(repo => repo.GetAllAsQueryable<Dog>()).Returns(dogList);
 
-        var result = await _service.GetDoggies(Sorting.Name, Sorting.Ascending, 1, 2);
+        var result = await _service.GetDoggies(Sorting.Name, Sorting.Ascending, 1, 2, cancellationToken);
 
         Assert.Equal(2, result.Count());
         Assert.Contains(result, d => d.Name == "Buddy");
